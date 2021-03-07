@@ -92,6 +92,7 @@ var choiceOne, choiceTwo, choiceThree, choiceFour;
 //Timer Located in the header
 timerElement = document.querySelector(".timer");
 
+wholeQuiz = document.querySelector(".quiz");
 //questions div
 questionElement = document.querySelector(".question");
 
@@ -125,12 +126,12 @@ function startTimer() {
       timerElement.textContent = "Time Left: " + timer;
       endQuiz();
     }
-  }, 2000);
+  }, 1500);
 }
 // Function for Home Page //
 function home() {
-  score = 0;
-  questionElement.innerHTML = "<h1>Coding Quiz Challenge</h1>";
+  centerChoices();
+  questionElement.innerHTML = "<h1><center>Coding Quiz Challenge</center></h1>";
   choicesElement.innerHTML =
     "<h2><center>Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by 10 seconds!</center></h2>" +
     "<br><center><button class='start-quiz' type='button'>Start Quiz</button></center>";
@@ -141,6 +142,7 @@ function home() {
 
 //function when start quiz button is clicked
 function startQuiz() {
+  alignChoices();
   startTimer();
   if (questionCounter === 0) {
     choicesElement.innerHTML = "";
@@ -413,6 +415,38 @@ function clickedChoiceFour() {
       startQuiz();
     }, 1000);
   }
+}
+
+//function to align divs in the center
+function centerChoices() {
+  choicesElement.setAttribute(
+    "style",
+    "display: flex; justify-content: center; align-items: center;"
+  );
+  questionElement.setAttribute(
+    "style",
+    "display: flex; justify-content: center; align-items: center;"
+  );
+  wholeQuiz.setAttribute(
+    "style",
+    "display: flex; justify-content: center; align-items: center;"
+  );
+}
+
+//function to align divs in a row
+function alignChoices() {
+  choicesElement.setAttribute(
+    "style",
+    "display: flex; justify-content: flex-start; align-items: flex-start;"
+  );
+  questionElement.setAttribute(
+    "style",
+    "display: flex; justify-content: flex-start; align-items: flex-start;"
+  );
+  wholeQuiz.setAttribute(
+    "style",
+    "display: flex; justify-content: flex-start; align-items: flex-start;"
+  );
 }
 
 home();
