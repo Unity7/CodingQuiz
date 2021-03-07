@@ -14,6 +14,9 @@
 var timer = 60;
 var questionCounter = 0;
 var score = 0;
+playerScores = ["20", "30"];
+playerInitals = ["cc", "dd"];
+var resultScore, resultInital;
 var myQuestions = [
   {
     question: "JavaScript is a ___ -side programming language",
@@ -45,6 +48,38 @@ var myQuestions = [
     },
     correctAnswer: "d",
   },
+  {
+    question:
+      "What is the HTML tag under which one can write the JavaScript code?",
+    answers: {
+      a: "<javascript>",
+      b: "<scripted>",
+      c: "<script>",
+      d: "<js>",
+    },
+    correctAnswer: "c",
+  },
+  {
+    question:
+      "Which of the following is the correct syntax to display “GeeksforGeeks” in an alert box using JavaScript?",
+    answers: {
+      a: "alertbox(“GeeksforGeeks”);",
+      b: "msg(“GeeksforGeeks”);",
+      c: "msgbox(“GeeksforGeeks”);",
+      d: "alert(“GeeksforGeeks”);",
+    },
+    correctAnswer: "d",
+  },
+  {
+    question: "Which of the following is not a reserved word in JavaScript?",
+    answers: {
+      a: "interface",
+      b: "throws",
+      c: "program",
+      d: "short",
+    },
+    correctAnswer: "c",
+  },
 ];
 
 var choiceOne, choiceTwo, choiceThree, choiceFour;
@@ -63,6 +98,8 @@ choicesElement = document.querySelector(".choices");
 startQuizBtn = document.querySelector(".start-quiz");
 
 choiceResult = document.querySelector(".results");
+
+var scoreSubmit, nameSubmit, hsList;
 /// -------------------- Functions  Section --------------------  ///
 
 //Function to start the timer
@@ -70,6 +107,7 @@ setInterval(() => {
   if (timer != 0) {
     timer--;
     timerElement.textContent = "Time Left: " + timer;
+  } else if (timer === 0) {
   }
 }, 1000);
 
@@ -84,7 +122,74 @@ function home() {
 
 //function when start quiz button is clicked
 function startQuiz() {
-  console.log("button clicked");
+  if (questionCounter === 0) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else if (questionCounter === 1) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else if (questionCounter === 2) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else if (questionCounter === 3) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else if (questionCounter === 4) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else if (questionCounter === 5) {
+    choicesElement.innerHTML = "";
+    renderQuestion(myQuestions[questionCounter]);
+    createButton(myQuestions[questionCounter]);
+    createListeners();
+  } else {
+    endQuiz();
+  }
+}
+
+function endQuiz() {
+  questionCounter = 0;
+  questionElement.innerHTML = "<h1>All done!</h1>";
+  choicesElement.innerHTML =
+    "Your final score is " +
+    score +
+    "<div class='score'>Enter initials: <input type='text' id='initals'><button id='score-submit'>Submit</button></div>";
+  scoreSubmit = document.querySelector("#score-submit");
+  nameSubmit = document.querySelector("#initals");
+  scoreSubmit.addEventListener("click", clickedScore);
+}
+
+//function when the submit high score button is clicked
+function clickedScore() {
+  if (playerInitals.includes(nameSubmit.value)) {
+    alert("That inital already exist");
+  } else {
+    playerInitals.push(nameSubmit.value);
+    playerScores.push(score);
+    viewHS();
+  }
+}
+
+//function to view highscore
+function viewHS() {
+  questionElement.innerHTML = "<h1>High Scores</h1>";
+  choicesElement.innerHTML = "<ol id='hs-list'><ol>";
+  hsList = document.querySelector("#hs-list");
+  for (var i = 0; i < playerScores.length; i++) {
+    var list = document.createElement("li");
+    list.textContent = playerInitals[i] + " - " + playerScores[i];
+    hsList.appendChild(list);
+  }
 }
 
 //function to render the Question
@@ -117,6 +222,8 @@ function createButton(obj) {
   answerFour.setAttribute("id", "d");
   choicesElement.appendChild(answerFour);
   choiceFour = choicesElement.querySelector("#d");
+
+  createCheck = false;
 }
 
 //function to create eventListners for answer choices
@@ -134,6 +241,8 @@ function clickedChoiceOne() {
     setTimeout(() => {
       choiceResult.innerHTML = "";
       questionCounter++;
+      score += 5;
+      startQuiz();
     }, 1000);
   } else {
     choiceResult.innerHTML = "Incorrect: -10 Seconds";
@@ -142,6 +251,7 @@ function clickedChoiceOne() {
       questionCounter++;
       score -= 5;
       timer -= 10;
+      startQuiz();
     }, 1000);
   }
 }
@@ -153,6 +263,7 @@ function clickedChoiceTwo() {
       choiceResult.innerHTML = "";
       questionCounter++;
       score += 5;
+      startQuiz();
     }, 1000);
   } else {
     choiceResult.innerHTML = "Incorrect: -10 Seconds";
@@ -161,6 +272,7 @@ function clickedChoiceTwo() {
       questionCounter++;
       score -= 5;
       timer -= 10;
+      startQuiz();
     }, 1000);
   }
 }
@@ -171,6 +283,8 @@ function clickedChoiceThree() {
     setTimeout(() => {
       choiceResult.innerHTML = "";
       questionCounter++;
+      score += 5;
+      startQuiz();
     }, 1000);
   } else {
     choiceResult.innerHTML = "Incorrect: -10 Seconds";
@@ -179,6 +293,7 @@ function clickedChoiceThree() {
       questionCounter++;
       score -= 5;
       timer -= 10;
+      startQuiz();
     }, 1000);
   }
 }
@@ -189,6 +304,8 @@ function clickedChoiceFour() {
     setTimeout(() => {
       choiceResult.innerHTML = "";
       questionCounter++;
+      score += 5;
+      startQuiz();
     }, 1000);
   } else {
     choiceResult.innerHTML = "Incorrect: -10 Seconds";
@@ -197,6 +314,7 @@ function clickedChoiceFour() {
       questionCounter++;
       score -= 5;
       timer -= 10;
+      startQuiz();
     }, 1000);
   }
 }
@@ -210,4 +328,4 @@ home();
 /// -------------------- Event Listeners  --------------------  ///
 
 //event listener for the start quiz button
-// startQuizBtn.addEventListener("click", startQuiz);
+startQuizBtn.addEventListener("click", startQuiz);

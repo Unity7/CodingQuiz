@@ -56,3 +56,12 @@ button:hover {
 .results {
   font-size: 30px;
 }
+
+.score {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 50px 0px;
+}
