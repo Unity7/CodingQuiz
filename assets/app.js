@@ -17,8 +17,8 @@ var score = 0;
 playerScores = [];
 playerInitals = [];
 
-playerScores2 = "";
-playerInitals2 = "";
+lsPlayerScores = "";
+lsPlayerInitals = "";
 var resultScore, resultInital;
 var myQuestions = [
   {
@@ -130,6 +130,7 @@ function startTimer() {
 }
 // Function for Home Page //
 function home() {
+  score = 0;
   centerChoices();
   questionElement.innerHTML = "<h1><center>Coding Quiz Challenge</center></h1>";
   choicesElement.innerHTML =
@@ -215,27 +216,28 @@ function clickedScore() {
 }
 
 function setLS() {
-  playerScores2 = playerScores.toString();
-  localStorage.setItem("playerScore", playerScores2);
-  playerInitals2 = playerInitals.toString();
-  localStorage.setItem("playerInital", playerInitals2);
+  lsPlayerScores = playerScores.toString();
+  localStorage.setItem("playerScore", lsPlayerScores);
+  lsPlayerInitals = playerInitals.toString();
+  localStorage.setItem("playerInital", lsPlayerInitals);
 }
 
 function matchHS() {
   if (localStorage.getItem("playerScore") === null) {
     playerScores = [];
     playerInitals = [];
-    playerScores2 = "";
-    playerInitals2 = "";
+    lsPlayerScores = "";
+    lsPlayerInitals = "";
   } else {
-    playerInitals2 = localStorage.getItem("playerInital");
-    playerScores2 = localStorage.getItem("playerScore");
-    playerInitals = playerInitals2.split(",");
-    playerScores = playerScores2.split(",");
+    lsPlayerInitals = localStorage.getItem("playerInital");
+    lsPlayerScores = localStorage.getItem("playerScore");
+    playerInitals = lsPlayerInitals.split(",");
+    playerScores = lsPlayerScores.split(",");
   }
 }
 //function to view highscore
 function viewHS() {
+  alignChoices();
   questionElement.innerHTML = "<h1>High Scores</h1>";
   choicesElement.innerHTML = "<ul id='hs-list'><ul>";
   hsList = document.querySelector("#hs-list");
@@ -283,8 +285,8 @@ function viewHS() {
   function clearHighScore() {
     playerScores = [];
     playerInitals = [];
-    playerScores2 = "";
-    playerInitals2 = "";
+    lsPlayerScores = "";
+    lsPlayerInitals = "";
     localStorage.setItem("playerInital", "");
     localStorage.setItem("playerScore", "");
     viewHS();
