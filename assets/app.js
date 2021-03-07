@@ -14,8 +14,11 @@
 var timer = 60;
 var questionCounter = 0;
 var score = 0;
-playerScores = ["20", "30"];
-playerInitals = ["cc", "dd"];
+playerScores = [];
+playerInitals = [];
+
+playerScores2 = "";
+playerInitals2 = "";
 var resultScore, resultInital;
 var myQuestions = [
   {
@@ -99,29 +102,46 @@ startQuizBtn = document.querySelector(".start-quiz");
 
 choiceResult = document.querySelector(".results");
 
-var scoreSubmit, nameSubmit, hsList;
+var scoreSubmit, nameSubmit, hsList, goBack, clearScore, list;
 /// -------------------- Functions  Section --------------------  ///
 
-//Function to start the timer
-setInterval(() => {
-  if (timer != 0) {
-    timer--;
-    timerElement.textContent = "Time Left: " + timer;
-  } else if (timer === 0) {
-  }
-}, 1000);
+//function to reset the timer
+function resetTimer() {
+  timer = 60;
+}
 
+//Function to start the timer
+function startTimer() {
+  var startTimer = setInterval(() => {
+    if (timer > 0) {
+      timer--;
+      timerElement.textContent = "Time Left: " + timer;
+    } else if (timer === 0) {
+      clearInterval(startTimer);
+      endQuiz();
+    } else if (timer < 0) {
+      clearInterval(startTimer);
+      timer = 0;
+      timerElement.textContent = "Time Left: " + timer;
+      endQuiz();
+    }
+  }, 2000);
+}
 // Function for Home Page //
 function home() {
+  score = 0;
   questionElement.innerHTML = "<h1>Coding Quiz Challenge</h1>";
   choicesElement.innerHTML =
     "<h2><center>Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by 10 seconds!</center></h2>" +
     "<br><center><button class='start-quiz' type='button'>Start Quiz</button></center>";
   startQuizBtn = document.querySelector(".start-quiz");
+  startQuizBtn.addEventListener("click", startQuiz);
+  startQuizBtn.addEventListener("click", resetTimer);
 }
 
 //function when start quiz button is clicked
 function startQuiz() {
+  startTimer();
   if (questionCounter === 0) {
     choicesElement.innerHTML = "";
     renderQuestion(myQuestions[questionCounter]);
@@ -159,6 +179,10 @@ function startQuiz() {
 
 function endQuiz() {
   questionCounter = 0;
+  timer = 0;
+  if (score < 0) {
+    score = 0;
+  }
   questionElement.innerHTML = "<h1>All done!</h1>";
   choicesElement.innerHTML =
     "Your final score is " +
@@ -173,25 +197,97 @@ function endQuiz() {
 function clickedScore() {
   if (playerInitals.includes(nameSubmit.value)) {
     alert("That inital already exist");
+  } else if (
+    nameSubmit.value === "" ||
+    nameSubmit.value === null ||
+    nameSubmit.value === undefined
+  ) {
+    alert("Please enter valid initals");
   } else {
     playerInitals.push(nameSubmit.value);
     playerScores.push(score);
+    setLS();
+    matchHS();
     viewHS();
   }
 }
 
+function setLS() {
+  playerScores2 = playerScores.toString();
+  localStorage.setItem("playerScore", playerScores2);
+  playerInitals2 = playerInitals.toString();
+  localStorage.setItem("playerInital", playerInitals2);
+}
+
+function matchHS() {
+  if (localStorage.getItem("playerScore") === null) {
+    playerScores = [];
+    playerInitals = [];
+    playerScores2 = "";
+    playerInitals2 = "";
+  } else {
+    playerInitals2 = localStorage.getItem("playerInital");
+    playerScores2 = localStorage.getItem("playerScore");
+    playerInitals = playerInitals2.split(",");
+    playerScores = playerScores2.split(",");
+  }
+}
 //function to view highscore
 function viewHS() {
   questionElement.innerHTML = "<h1>High Scores</h1>";
-  choicesElement.innerHTML = "<ol id='hs-list'><ol>";
+  choicesElement.innerHTML = "<ul id='hs-list'><ul>";
   hsList = document.querySelector("#hs-list");
-  for (var i = 0; i < playerScores.length; i++) {
-    var list = document.createElement("li");
-    list.textContent = playerInitals[i] + " - " + playerScores[i];
-    hsList.appendChild(list);
+
+  if (
+    localStorage.getItem("playerInital", "") === "" ||
+    playerScores === [] ||
+    playerInitals === []
+  ) {
+    questionElement.innerHTML = "<h1>High Scores</h1>";
+    choicesElement.innerHTML = "No High Scores";
+  } else {
+    //loop through high score array
+    for (var i = 0; i < playerScores.length; i++) {
+      var list = document.createElement("li");
+      list.setAttribute("id", "list");
+      list.textContent = playerInitals[i] + " - " + playerScores[i];
+      hsList.appendChild(list);
+    }
+  }
+
+  //create div to contain buttons
+  var btnDiv = document.createElement("div");
+  btnDiv.className = "endQuiz";
+  choicesElement.appendChild(btnDiv);
+
+  //create buttons to go back and clear hs
+  var goBackBtn = document.createElement("button");
+  var clearScoreBtn = document.createElement("button");
+  goBackBtn.setAttribute("id", "goBackBtn");
+  clearScoreBtn.setAttribute("id", "clearScoreBtn");
+  goBackBtn.innerHTML = "Go Back";
+  clearScoreBtn.innerHTML = "Clear High Score";
+  //append to div
+  btnDiv.appendChild(goBackBtn);
+  btnDiv.appendChild(clearScoreBtn);
+
+  //create event listeners for buttons
+  goBack = document.querySelector("#goBackBtn");
+  clearScore = document.querySelector("#clearScoreBtn");
+  goBackBtn.addEventListener("click", home);
+  clearScore.addEventListener("click", clearHighScore);
+
+  //function to clear the high schore in high score page
+  function clearHighScore() {
+    playerScores = [];
+    playerInitals = [];
+    playerScores2 = "";
+    playerInitals2 = "";
+    localStorage.setItem("playerInital", "");
+    localStorage.setItem("playerScore", "");
+    viewHS();
   }
 }
-
 //function to render the Question
 function renderQuestion(questionObj) {
   questionElement.innerHTML = questionObj.question;
@@ -319,13 +415,9 @@ function clickedChoiceFour() {
   }
 }
 
-/// -------------------- Main Flow  --------------------  ///
 home();
-// createButton(myQuestions[0]);
-// createListeners();
-// While Quiz is Active - Start the Quiz
+matchHS();
 
-/// -------------------- Event Listeners  --------------------  ///
-
-//event listener for the start quiz button
-startQuizBtn.addEventListener("click", startQuiz);
+//global event listeners
+highscore = document.querySelector("#highscore");
+highscore.addEventListener("click", viewHS);
